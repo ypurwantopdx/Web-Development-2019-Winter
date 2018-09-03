@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SchoolApi.Models;
 
 namespace SchoolApi.Controllers
@@ -21,9 +22,9 @@ namespace SchoolApi.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            // return new string[] { "value1", "value2" };
-
-            return Ok(_schoolDbContext.Persons.ToList());
+            return Ok(_schoolDbContext.Persons
+                .Include(p => p.Student)
+                .Select(p => new {FirstName = p.FirstName, EmailAddress = p.Student.Email}).ToList());
         }
 
         // GET api/values/5
